@@ -1,0 +1,48 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+sourceCompatibility = 1.8
+version = '0.0.1'
+
+def defaultEncoding = 'UTF-8'
+def jdkVersion = '1.8'
+[compileJava, compileTestJava]*.options*.encoding = defaultEncoding
+
+repositories {
+  mavenCentral()
+}
+
+buildscript {
+    repositories {
+      mavenCentral()
+    }
+}
+
+//this one works with file dependencies. If you prefer
+configurations {
+    provided
+}
+
+dependencies {
+    provided 'org.fxmisc.richtext:richtextfx:0.7-M2'
+
+    testCompile 'junit:junit:4.11'
+}
+compileJava {
+    //add required JavaFX libs to compile classpath
+    sourceSets.main.compileClasspath += configurations.provided
+    sourceSets.main.compileClasspath += configurations.runtime
+    sourceSets.main.compileClasspath += configurations.testCompile
+}
+
+eclipse {
+    classpath.defaultOutputDir = file('build')
+    classpath {
+        plusConfigurations += [ configurations.provided ]
+    }
+}
+
+jar {
+    destinationDir = projectDir
+    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+}
