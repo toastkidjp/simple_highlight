@@ -8,6 +8,7 @@ import java.util.concurrent.Executors;
 
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.StyleSpans;
+import org.reactfx.Subscription;
 
 import javafx.concurrent.Task;
 
@@ -36,9 +37,9 @@ public abstract class Highlighter {
     /**
      * Do highlighting.
      */
-    public final void highlight() {
+    public final Subscription highlight() {
         final String code = codeArea.getText();
-        codeArea.richChanges()
+        final Subscription subscription = codeArea.richChanges()
             .filter(ch -> !ch.getInserted().equals(ch.getRemoved()))
             .successionEnds(Duration.ofMillis(500))
             .supplyTask(this::computeHighlightingAsync)
@@ -53,6 +54,7 @@ public abstract class Highlighter {
             })
         .subscribe(this::applyHighlighting);
         codeArea.replaceText(code);
+        return subscription;
     }
 
     /**
