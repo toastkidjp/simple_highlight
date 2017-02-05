@@ -10,6 +10,9 @@ def jdkVersion = '1.8'
 
 repositories {
   mavenCentral()
+  maven {
+    url 'https://oss.sonatype.org/content/repositories/snapshots/'
+  }
 }
 
 buildscript {
@@ -24,7 +27,7 @@ configurations {
 }
 
 dependencies {
-    provided 'org.fxmisc.richtext:richtextfx:0.7-M2'
+    provided 'org.fxmisc.richtext:richtextfx:1.0.0-SNAPSHOT'
 
     testCompile 'junit:junit:4.11'
 }
